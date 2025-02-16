@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('original');
             $table->string('short_url');
             $table->integer('clicks')->default(0);
+            $table->timestamp('expire_at');
             $table->timestamps();
         });
     }

@@ -1,7 +1,7 @@
 <template>
   <Layout>
     <template #title>
-      <h2>Shorten you url</h2>
+      <h2>Paste the URL to be shortened</h2>
     </template>
     <template #subtitle>
       <h6>*Your url will expire in 5 minutes</h6>
@@ -17,7 +17,7 @@
                         class="pa-0"
                         rules="required">
             <template #append-inner>
-              <v-btn @click="submit" icon color="primary">
+              <v-btn @click="submit" :loading="isLoading" icon color="primary">
                 <v-icon>mdi-send</v-icon>
               </v-btn>
             </template>
@@ -32,9 +32,9 @@
               type="success"
           >
             <template #text>
-                  <span>
-                    This is the generated url: <a :href="data" target="_blank">{{ data }}</a>
-                  </span>
+                <p>Shorten Url: <a :href="data.short_url" target="_blank">{{ data.short_url }}</a></p>
+                <p v-if="url !== data.original">Original Url: <a :href="data.original" target="_blank">{{ data.original }}</a></p>
+                <p v-if="data.clicks > 0">Clicks: {{ data.clicks }}</p>
             </template>
           </v-alert>
           <v-alert

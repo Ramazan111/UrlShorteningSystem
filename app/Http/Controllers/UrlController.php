@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreRequest;
 use App\Models\Url;
 use App\Services\UrlService;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Redirect;
 
 class UrlController extends Controller
@@ -21,6 +23,7 @@ class UrlController extends Controller
     {
         try {
             $url = Url::where('short_url', $url)->first();
+
             if ($url) {
                 $url->clicks++;
                 $url->save();
@@ -29,33 +32,38 @@ class UrlController extends Controller
             return Redirect::to($url->original);
         } catch (Exception $exception) {
             return response()->json([
-                'message' => $exception->getMessage(),
-                'data' => 'adsf',
-            ], 500);
+                'message' => 'Shorten url failed: ' . $exception->getMessage(),
+                'data' => null,
+            ], $exception->getCode());
         }
     }
 
-    public function store(Request $request)
+    /**
+     * Creates shorten url
+     *
+     * @param StoreRequest $request
+     * @return AnonymousResourceCollection
+     */
+    public function store(StoreRequest $request)
     {
-        $request->validate([
-            'original' => 'required|string|url|max:255'
-        ]);
+        try {
+            $request->validated();
 
-        $url = Url::where('original', $request->original)->first();
+            $url = $this->urlService->createShortUrl($request);
 
-        if ($url) {
-            $url->updated_at = now();
-            $url->save();
-        } else {
-            $url = Url::create([
-                'original' => $request->original,
-                'short_url' => $this->urlService->shortenUrl()
-            ]);
+            return response()->json([
+                'message' => 'Url is shortened successfully.',
+                'data' => [
+                    'short_url' => env('APP_URL') . $url->short_url,
+                    'original' => $url->original,
+                    'clicks' => $url->clicks
+                ],
+            ], 201);
+        } catch (Exception $exception) {
+            return response()->json([
+                'message' => 'Shorten url failed: ' . $exception->getMessage(),
+                'data' => null,
+            ], $exception->getCode());
         }
-
-        return response()->json([
-            'message' => 'Url is created successfully.',
-            'data' => env('APP_URL') . $url->short_url,
-        ], 201);
     }
 }
