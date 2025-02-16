@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('urls', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('original');
             $table->string('short_url');
             $table->integer('clicks')->default(0);

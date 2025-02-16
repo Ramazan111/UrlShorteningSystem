@@ -11,4 +11,13 @@ class Url extends Model
         'short_url',
         'clicks',
     ];
+
+    protected $dates = [
+        'expire_at'
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
