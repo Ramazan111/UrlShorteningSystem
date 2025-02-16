@@ -6,6 +6,7 @@ use App\Http\Requests\StoreRequest;
 use App\Models\Url;
 use App\Services\UrlService;
 use Exception;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Redirect;
@@ -19,6 +20,13 @@ class UrlController extends Controller
         $this->urlService = $urlService;
     }
 
+    /**
+     * Redirect to original url
+     *
+     * @param Request $request
+     * @param $url
+     * @return RedirectResponse
+     */
     public function get(Request $request, $url)
     {
         try {
