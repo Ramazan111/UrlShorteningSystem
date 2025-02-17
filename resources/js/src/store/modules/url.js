@@ -3,6 +3,7 @@ import axios from 'axios';
 export default {
     state() {
         return {
+            url: {},
             data: [],
             loading: false,
             error: null,
@@ -10,6 +11,9 @@ export default {
         };
     },
     mutations: {
+        setUrl(state, data) {
+            state.url = data.data;
+        },
         setData(state, data) {
             state.data = data;
         },
@@ -35,7 +39,7 @@ export default {
                 const response = await axios.post('/api/url-shortening', payload);
                 commit('clearStates')
                 commit('setSuccess', 'Url created successfully');
-                commit('setData', response.data);
+                commit('setUrl', response.data);
             } catch (error) {
                 commit('clearStates')
                 commit('setError', error.message || 'An error occurred while creating the url');
@@ -49,12 +53,8 @@ export default {
 
             try {
                 const response = await axios.get('/api/urls', payload);
-                commit('clearStates')
-                commit('setSuccess', 'Url created successfully');
                 commit('setData', response.data);
             } catch (error) {
-                commit('clearStates')
-                commit('setError', error.message || 'An error occurred while creating the url');
             } finally {
                 commit('setLoading', false);
             }
@@ -77,6 +77,9 @@ export default {
         },
     },
     getters: {
+        url(state) {
+            return state.url;
+        },
         data(state) {
             return state.data;
         },

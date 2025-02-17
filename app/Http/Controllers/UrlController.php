@@ -3,17 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreRequest;
+use App\Http\Resources\UrlResource;
 use App\Models\Url;
 use App\Services\UrlService;
+use Carbon\Carbon;
 use Exception;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Inertia\Inertia;
 
 class UrlController extends Controller
 {
+    use AuthorizesRequests;
+
     protected $urlService;
 
     public function __construct(UrlService $urlService)
@@ -31,7 +37,14 @@ class UrlController extends Controller
     public function get(Request $request, $url)
     {
         try {
-            $url = Url::where('short_url', $url)->first();
+            $url = Url::where('short_url', 'S/' . $url)->first();
+
+            if (Carbon::parse($url->expire_at)->isBefore(Carbon::now())) {
+                return Inertia::render('Error', [
+                    'message' => 'Page not found',
+                    'data' => null,
+                ]);
+            }
 
             if ($url) {
                 $url->clicks++;
@@ -40,10 +53,10 @@ class UrlController extends Controller
 
             return Redirect::to($url->original);
         } catch (Exception $exception) {
-            return response()->json([
+            return Inertia::render('Error', [
                 'message' => 'Shorten url failed: ' . $exception->getMessage(),
                 'data' => null,
-            ], 500);
+            ]);
         }
     }
 
@@ -51,13 +64,12 @@ class UrlController extends Controller
      * Url list
      *
      * @param Request $request
-     * @param $url
-     * @return RedirectResponse
+     * @return AnonymousResourceCollection
      */
     public function index(Request $request)
     {
         try {
-            return Auth::user()->urls()->paginate(10);
+            return UrlResource::collection(Auth::user()->urls()->paginate(10));
         } catch (Exception $exception) {
             return response()->json([
                 'message' => 'Shorten url failed: ' . $exception->getMessage(),
@@ -101,7 +113,7 @@ class UrlController extends Controller
      * @param StoreRequest $request
      * @return AnonymousResourceCollection
      */
-    public function update(StoreRequest $request, Url $url)
+    public function update(Request $request, Url $url)
     {
         try {
             $request->validate([

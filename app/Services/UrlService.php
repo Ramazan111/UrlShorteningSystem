@@ -11,7 +11,7 @@ class UrlService
 {
     private function shortenUrl()
     {
-        return Str::random(6);
+        return 'S/' . Str::random(6);
     }
 
     /**

@@ -9,7 +9,7 @@
     <template #body>
       <v-row>
         <v-col>
-          <v-text-field v-model="url"
+          <v-text-field v-model="selectedUrl"
                         placeholder="Add url..."
                         hide-details
                         variant="outlined"
@@ -32,9 +32,9 @@
               type="success"
           >
             <template #text>
-                <p>Shorten Url: <a :href="data.short_url" target="_blank">{{ data.short_url }}</a></p>
-                <p v-if="url !== data.original">Original Url: <a :href="data.original" target="_blank">{{ data.original }}</a></p>
-                <p v-if="data.clicks > 0">Clicks: {{ data.clicks }}</p>
+                <p>Shorten Url: <a :href="url.short_url" target="_blank">{{ url.short_url }}</a></p>
+                <p v-if="url !== url.original">Original Url: <a :href="url.original" target="_blank">{{ url.original }}</a></p>
+                <p v-if="url.clicks > 0">Clicks: {{ url.clicks }}</p>
             </template>
           </v-alert>
           <v-alert
@@ -56,18 +56,18 @@ export default {
   components: {Layout},
   data() {
     return {
-      url: ''
+      selectedUrl: ''
     }
   },
   computed: {
-    ...mapGetters(['data', 'isLoading', 'success', 'error'])
+    ...mapGetters(['url', 'isLoading', 'success', 'error'])
   },
   methods: {
     ...mapActions(['store']),
 
     async submit() {
       await this.store({
-        original: this.url
+        original: this.selectedUrl
       })
     }
   }
