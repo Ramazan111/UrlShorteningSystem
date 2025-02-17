@@ -11,7 +11,7 @@ export default {
     },
     mutations: {
         setData(state, data) {
-            state.data = data.data;
+            state.data = data;
         },
         setLoading(state, isLoading) {
             state.loading = isLoading;
@@ -33,6 +33,38 @@ export default {
 
             try {
                 const response = await axios.post('/api/url-shortening', payload);
+                commit('clearStates')
+                commit('setSuccess', 'Url created successfully');
+                commit('setData', response.data);
+            } catch (error) {
+                commit('clearStates')
+                commit('setError', error.message || 'An error occurred while creating the url');
+            } finally {
+                commit('setLoading', false);
+            }
+        },
+
+        async loadItems({ commit }, payload) {
+            commit('setLoading', true);
+
+            try {
+                const response = await axios.get('/api/urls', payload);
+                commit('clearStates')
+                commit('setSuccess', 'Url created successfully');
+                commit('setData', response.data);
+            } catch (error) {
+                commit('clearStates')
+                commit('setError', error.message || 'An error occurred while creating the url');
+            } finally {
+                commit('setLoading', false);
+            }
+        },
+
+        async editExpireAt({ commit }, payload) {
+            commit('setLoading', true);
+
+            try {
+                const response = await axios.post('/api/urls/' + payload.id, payload);
                 commit('clearStates')
                 commit('setSuccess', 'Url created successfully');
                 commit('setData', response.data);
