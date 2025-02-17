@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Url;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class UrlService
@@ -28,6 +29,7 @@ class UrlService
             $shortenUrl->save();
         } else {
             $shortenUrl = Url::create([
+                'user_id' => Auth::guard('sanctum')->user()->id,
                 'original' => $payload->original,
                 'expire_at' => Carbon::now()->addMinutes(5),
                 'short_url' => $this->shortenUrl(),

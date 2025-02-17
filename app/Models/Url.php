@@ -7,12 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Url extends Model
 {
     protected $fillable = [
+        'user_id',
         'original',
         'short_url',
         'clicks',
-    ];
-
-    protected $dates = [
         'expire_at'
     ];
 

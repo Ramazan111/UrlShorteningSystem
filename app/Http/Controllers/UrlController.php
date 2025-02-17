@@ -42,7 +42,7 @@ class UrlController extends Controller
             return response()->json([
                 'message' => 'Shorten url failed: ' . $exception->getMessage(),
                 'data' => null,
-            ], $exception->getCode());
+            ], 500);
         }
     }
 
@@ -71,7 +71,7 @@ class UrlController extends Controller
             return response()->json([
                 'message' => 'Shorten url failed: ' . $exception->getMessage(),
                 'data' => null,
-            ], $exception->getCode());
+            ], 500);
         }
     }
 }
