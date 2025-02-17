@@ -10,6 +10,8 @@ Route::get('/', function () {
     return Inertia::render('Auth/Login');
 });
 
+Route::get('/S/{url}', [UrlController::class, 'get']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');

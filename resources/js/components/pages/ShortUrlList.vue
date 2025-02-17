@@ -15,6 +15,9 @@
               item-value="name"
               @update:options="loadItems"
           >
+            <template #item.short_url="{item}">
+              <v-btn type="text" :href="'S/' + item.short_url" target="_blank">{{ item.short_url }}</v-btn>
+            </template>
             <template #item.expire_at="{item}">
               <div v-if="!editMode[item.id]" class="d-flex justify-space-around items-center">
                 <span>{{ item.expire_at }}</span>
