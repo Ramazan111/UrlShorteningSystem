@@ -39,7 +39,7 @@ class UrlController extends Controller
         try {
             $url = Url::where('short_url', 'S/' . $url)->first();
 
-            if (Carbon::parse($url->expire_at)->isBefore(Carbon::now())) {
+            if (Carbon::parse($url->expire_at)->isBefore(Carbon::now(config('urlconfig.timezone')))) {
                 return Inertia::render('Error', [
                     'message' => 'Page not found',
                     'data' => null,
@@ -54,7 +54,7 @@ class UrlController extends Controller
             return Redirect::to($url->original);
         } catch (Exception $exception) {
             return Inertia::render('Error', [
-                'message' => 'Shorten url failed: ' . $exception->getMessage(),
+                'message' => 'Page not found',
                 'data' => null,
             ]);
         }

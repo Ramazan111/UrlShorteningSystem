@@ -25,13 +25,13 @@ class UrlService
         $shortenUrl = Url::where('original', $payload->original)->first();
 
         if ($shortenUrl) {
-            $shortenUrl->expire_at = Carbon::now()->addMinutes(5);
+            $shortenUrl->expire_at = Carbon::now(config('urlconfig.timezone'))->addMinutes(config('urlconfig.expiration_time'));
             $shortenUrl->save();
         } else {
             $shortenUrl = Url::create([
                 'user_id' => Auth::guard('sanctum')->user()->id,
                 'original' => $payload->original,
-                'expire_at' => Carbon::now()->addMinutes(5),
+                'expire_at' => Carbon::now(config('urlconfig.timezone'))->addMinutes(config('urlconfig.expiration_time')),
                 'short_url' => $this->shortenUrl(),
                 'clicks' => 0,
             ]);
