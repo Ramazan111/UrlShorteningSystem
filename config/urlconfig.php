@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'expiration_time' => 1,
+    'expiration_time' => 5,
     'timezone' => 'Europe/Berlin'
 ];

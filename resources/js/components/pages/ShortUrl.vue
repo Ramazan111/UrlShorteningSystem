@@ -4,7 +4,6 @@
       <h2>Paste the URL to be shortened</h2>
     </template>
     <template #subtitle>
-      <h6>*Your url will expire in 5 minutes</h6>
     </template>
     <template #body>
       <v-row>
