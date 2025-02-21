@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ExpireAtUpdateRequest;
 use App\Http\Requests\StoreRequest;
 use App\Http\Resources\UrlResource;
 use App\Models\Url;
@@ -110,15 +111,14 @@ class UrlController extends Controller
     /**
      * Updates shorten url expire date
      *
-     * @param StoreRequest $request
+     * @param ExpireAtUpdateRequest $request
+     * @param Url $url
      * @return AnonymousResourceCollection
      */
-    public function update(Request $request, Url $url)
+    public function update(ExpireAtUpdateRequest $request, Url $url)
     {
         try {
-            $request->validate([
-                'expire_at' => 'date'
-            ]);
+            $request->validated();
 
             $url->update([
                 'expire_at' => $request->expire_at
